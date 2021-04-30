@@ -18,5 +18,10 @@ require (
 	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
 	golang.org/x/sys v0.0.0-20210403161142-5e06dd20ab57
+	golang.org/x/time v0.0.0-20210220033141-f8bda1e9f3ba
+	golang.zx2c4.com/wireguard v0.0.0-20210427022245-097af6e1351b
 	gopkg.in/yaml.v2 v2.4.0
+	gvisor.dev/gvisor v0.0.0-00010101000000-000000000000
 )
+
+replace gvisor.dev/gvisor => github.com/xjasonlyu/gvisor v0.0.0-20210321122453-eb40de9b30e3

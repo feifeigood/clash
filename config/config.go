@@ -40,6 +40,7 @@ type Inbound struct {
 	RedirPort      int      `json:"redir-port"`
 	TProxyPort     int      `json:"tproxy-port"`
 	MixedPort      int      `json:"mixed-port"`
+	Tun            Tun      `json:"tun"`
 	Authentication []string `json:"authentication"`
 	AllowLan       bool     `json:"allow-lan"`
 	BindAddress    string   `json:"bind-address"`
@@ -78,6 +79,10 @@ type Profile struct {
 	StoreSelected bool `yaml:"store-selected"`
 }
 
+type Tun struct {
+	Enable bool `yaml:"enable"`
+}
+
 // Experimental config
 type Experimental struct{}
 
@@ -92,6 +97,10 @@ type Config struct {
 	Users        []auth.AuthUser
 	Proxies      map[string]C.Proxy
 	Providers    map[string]provider.ProxyProvider
+}
+
+type RawTun struct {
+	Enable bool `yaml:"enable"`
 }
 
 type RawDNS struct {
@@ -131,6 +140,7 @@ type RawConfig struct {
 	Secret             string       `yaml:"secret"`
 	Interface          string       `yaml:"interface-name"`
 
+	Tun           RawTun                            `yaml:"tun"`
 	ProxyProvider map[string]map[string]interface{} `yaml:"proxy-providers"`
 	Hosts         map[string]string                 `yaml:"hosts"`
 	DNS           RawDNS                            `yaml:"dns"`
@@ -163,6 +173,9 @@ func UnmarshalRawConfig(buf []byte) (*RawConfig, error) {
 		Rule:           []string{},
 		Proxy:          []map[string]interface{}{},
 		ProxyGroup:     []map[string]interface{}{},
+		Tun: RawTun{
+			Enable: false,
+		},
 		DNS: RawDNS{
 			Enable:      false,
 			UseHosts:    true,
@@ -251,6 +264,9 @@ func parseGeneral(cfg *RawConfig) (*General, error) {
 			MixedPort:   cfg.MixedPort,
 			AllowLan:    cfg.AllowLan,
 			BindAddress: cfg.BindAddress,
+			Tun: Tun{
+				Enable: cfg.Tun.Enable,
+			},
 		},
 		Controller: Controller{
 			ExternalController: cfg.ExternalController,

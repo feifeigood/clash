@@ -11,6 +11,7 @@ import (
 	"github.com/Dreamacro/clash/proxy/mixed"
 	"github.com/Dreamacro/clash/proxy/redir"
 	"github.com/Dreamacro/clash/proxy/socks"
+	"github.com/Dreamacro/clash/proxy/tun"
 )
 
 var (
@@ -26,6 +27,7 @@ var (
 	tproxyUDPListener *redir.RedirUDPListener
 	mixedListener     *mixed.MixedListener
 	mixedUDPLister    *socks.SockUDPListener
+	tunAdapter        tun.TunAdapter
 
 	// lock for recreate function
 	socksMux  sync.Mutex
@@ -33,6 +35,7 @@ var (
 	redirMux  sync.Mutex
 	tproxyMux sync.Mutex
 	mixedMux  sync.Mutex
+	tunMux    sync.Mutex
 )
 
 type Ports struct {
@@ -261,6 +264,31 @@ func ReCreateMixed(port int) error {
 	mixedUDPLister, err = socks.NewSocksUDPProxy(addr)
 	if err != nil {
 		mixedListener.Close()
+		return err
+	}
+
+	return nil
+}
+
+func ReCreateTun(enable bool) error {
+	tunMux.Lock()
+	defer tunMux.Unlock()
+
+	if tunAdapter != nil {
+		if enable {
+			return nil
+		}
+		tunAdapter.Close()
+		tunAdapter = nil
+	}
+
+	if !enable {
+		return nil
+	}
+
+	var err error
+	tunAdapter, err = tun.NewTunAdapter()
+	if err != nil {
 		return err
 	}
 
