@@ -8,6 +8,8 @@ import (
 	adapters "github.com/Dreamacro/clash/adapters/inbound"
 	"github.com/Dreamacro/clash/component/socks5"
 	C "github.com/Dreamacro/clash/constant"
+	"github.com/Dreamacro/clash/dns"
+	"github.com/Dreamacro/clash/log"
 	"github.com/Dreamacro/clash/proxy/tun/netstack"
 	"github.com/Dreamacro/clash/proxy/tun/tuntap"
 	"github.com/Dreamacro/clash/tunnel"
@@ -15,8 +17,9 @@ import (
 )
 
 type tunAdapter struct {
-	ifce    *tuntap.Tun
-	ipstack *netstack.Stack
+	ifce      *tuntap.Tun
+	ipstack   *netstack.Stack
+	dnsserver *netstack.DNSServer
 }
 
 func NewTUNAdapter(name string) (TUNAdapter, error) {
@@ -34,7 +37,49 @@ func NewTUNAdapter(name string) (TUNAdapter, error) {
 		return nil, err
 	}
 
+	log.Infoln("Enabled tun mode setup interface name: %s", ifce.Name)
+
 	return &tunAdapter{ifce: ifce, ipstack: ipstack}, nil
+}
+
+func (t *tunAdapter) DNSListen() string {
+	if t.dnsserver != nil {
+		id := t.dnsserver.UDPEndpointID()
+		return fmt.Sprintf("%s:%d", id.LocalAddress.String(), id.LocalPort)
+	}
+	return ""
+}
+
+// Stop stop the DNS Server on tun
+func (a *tunAdapter) ReCreateDNSServer(resolver *dns.Resolver, mapper *dns.ResolverEnhancer, enable bool) error {
+	if !enable && a.dnsserver == nil {
+		return nil
+	}
+
+	if enable && a.dnsserver != nil && a.dnsserver.Resolver() == resolver {
+		return nil
+	}
+
+	if a.dnsserver != nil {
+		a.dnsserver.Stop()
+		a.dnsserver = nil
+		log.Debugln("tun DNS server stoped")
+	}
+
+	var err error
+	if resolver == nil {
+		return fmt.Errorf("failed to create DNS server on tun: resolver not provided")
+	}
+
+	server, err := netstack.CreateDNSServer(a.ipstack.Stack.Stack, resolver, mapper, a.ipstack.Stack.NICID)
+	if err != nil {
+		return err
+	}
+	a.dnsserver = server
+
+	log.Infoln("Tun DNS server listening at: %s", a.DNSListen())
+
+	return nil
 }
 
 func (a *tunAdapter) Close() {

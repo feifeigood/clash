@@ -6,7 +6,9 @@ import (
 	"strconv"
 	"sync"
 
+	"github.com/Dreamacro/clash/component/resolver"
 	"github.com/Dreamacro/clash/config"
+	"github.com/Dreamacro/clash/dns"
 	"github.com/Dreamacro/clash/log"
 	"github.com/Dreamacro/clash/proxy/http"
 	"github.com/Dreamacro/clash/proxy/mixed"
@@ -283,7 +285,7 @@ func ReCreateTun(conf config.Tun) error {
 
 	if tunAdapter != nil {
 		if enable {
-			return nil
+			return tunAdapter.ReCreateDNSServer(resolver.DefaultResolver.(*dns.Resolver), resolver.DefaultHostMapper.(*dns.ResolverEnhancer), conf.DNSHijack)
 		}
 		tunAdapter.Close()
 		tunAdapter = nil
@@ -297,6 +299,10 @@ func ReCreateTun(conf config.Tun) error {
 	tunAdapter, err = tun.NewTUNAdapter(name)
 	if err != nil {
 		return err
+	}
+
+	if resolver.DefaultResolver != nil {
+		return tunAdapter.ReCreateDNSServer(resolver.DefaultResolver.(*dns.Resolver), resolver.DefaultHostMapper.(*dns.ResolverEnhancer), conf.DNSHijack)
 	}
 
 	return nil

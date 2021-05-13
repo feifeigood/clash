@@ -186,3 +186,7 @@ func newHandler(resolver *Resolver, mapper *ResolverEnhancer) handler {
 
 	return compose(middlewares, withResolver(resolver))
 }
+
+func NewHandler(resolver *Resolver, mapper *ResolverEnhancer) handler {
+	return newHandler(resolver, mapper)
+}

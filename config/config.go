@@ -102,7 +102,8 @@ type Config struct {
 }
 
 type RawTun struct {
-	Enable bool `yaml:"enable"`
+	Enable    bool `yaml:"enable"`
+	DNSHijack bool `yaml:"dns-hijack"`
 }
 
 type RawDNS struct {
@@ -267,7 +268,8 @@ func parseGeneral(cfg *RawConfig) (*General, error) {
 			AllowLan:    cfg.AllowLan,
 			BindAddress: cfg.BindAddress,
 			Tun: Tun{
-				Enable: cfg.Tun.Enable,
+				Enable:    cfg.Tun.Enable,
+				DNSHijack: cfg.Tun.DNSHijack,
 			},
 		},
 		Controller: Controller{

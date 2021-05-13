@@ -46,6 +46,10 @@ func (s *Server) setHandler(handler handler) {
 	s.handler = handler
 }
 
+func (s *Server) SetHandler(handler handler) {
+	s.setHandler(handler)
+}
+
 func ReCreateServer(addr string, resolver *Resolver, mapper *ResolverEnhancer) error {
 	if addr == address && resolver != nil {
 		handler := newHandler(resolver, mapper)

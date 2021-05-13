@@ -26,6 +26,7 @@ type Stack struct {
 	Device  Device
 	Handler Handler
 	Stack   *stack.Stack
+	NICID   tcpip.NICID
 }
 
 func (s *Stack) Start(device Device, handler Handler) (err error) {
@@ -45,6 +46,7 @@ func (s *Stack) Start(device Device, handler Handler) (err error) {
 
 	// set NICID to 1
 	const NICID = tcpip.NICID(1)
+	s.NICID = NICID
 
 	// WithDefaultTTL sets the default TTL used by stack.
 	{
