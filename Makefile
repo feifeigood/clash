@@ -6,6 +6,8 @@ GOBUILD=CGO_ENABLED=0 go build -trimpath -ldflags '-X "github.com/Dreamacro/clas
 		-X "github.com/Dreamacro/clash/constant.BuildTime=$(BUILDTIME)" \
 		-w -s -buildid='
 
+
+
 PLATFORM_LIST = \
 	darwin-amd64 \
 	darwin-arm64 \
@@ -29,7 +31,7 @@ WINDOWS_ARCH_LIST = \
 	windows-amd64 \
 	windows-arm32v7
 
-all: linux-amd64 darwin-amd64 windows-amd64 # Most used
+all: darwin-amd64 windows-amd64 # Most used
 
 docker:
 	$(GOBUILD) -o $(BINDIR)/$(NAME)-$@

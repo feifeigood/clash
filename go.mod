@@ -14,14 +14,13 @@ require (
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.7.0
 	go.uber.org/atomic v1.7.0
-	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2
-	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4
+	golang.org/x/crypto v0.0.0-20210506145944-38f3c27a63bf
+	golang.org/x/net v0.0.0-20210505214959-0714010a04ed
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-	golang.org/x/sys v0.0.0-20210403161142-5e06dd20ab57
+	golang.org/x/sys v0.0.0-20210507014357-30e306a8bba5
 	golang.org/x/time v0.0.0-20210220033141-f8bda1e9f3ba
-	golang.zx2c4.com/wireguard v0.0.0-20210427022245-097af6e1351b
+	golang.zx2c4.com/wireguard v0.0.0-20210507110843-18ea215f0684
+	golang.zx2c4.com/wireguard/windows v0.3.13
 	gopkg.in/yaml.v2 v2.4.0
-	gvisor.dev/gvisor v0.0.0-00010101000000-000000000000
+	gvisor.dev/gvisor v0.0.0-20210506004418-fbfeba3024f0
 )
-
-replace gvisor.dev/gvisor => github.com/xjasonlyu/gvisor v0.0.0-20210321122453-eb40de9b30e3

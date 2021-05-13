@@ -80,7 +80,9 @@ type Profile struct {
 }
 
 type Tun struct {
-	Enable bool `yaml:"enable"`
+	Enable    bool   `yaml:"enable"`
+	Name      string `yaml:"-"`
+	DNSHijack bool   `yaml:"-"`
 }
 
 // Experimental config

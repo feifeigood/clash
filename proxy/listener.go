@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"sync"
 
+	"github.com/Dreamacro/clash/config"
 	"github.com/Dreamacro/clash/log"
 	"github.com/Dreamacro/clash/proxy/http"
 	"github.com/Dreamacro/clash/proxy/mixed"
@@ -27,7 +28,7 @@ var (
 	tproxyUDPListener *redir.RedirUDPListener
 	mixedListener     *mixed.MixedListener
 	mixedUDPLister    *socks.SockUDPListener
-	tunAdapter        tun.TunAdapter
+	tunAdapter        tun.TUNAdapter
 
 	// lock for recreate function
 	socksMux  sync.Mutex
@@ -270,9 +271,15 @@ func ReCreateMixed(port int) error {
 	return nil
 }
 
-func ReCreateTun(enable bool) error {
+func ReCreateTun(conf config.Tun) error {
 	tunMux.Lock()
 	defer tunMux.Unlock()
+
+	enable := conf.Enable
+	name := "utun"
+	if conf.Name != "" {
+		name = conf.Name
+	}
 
 	if tunAdapter != nil {
 		if enable {
@@ -287,7 +294,7 @@ func ReCreateTun(enable bool) error {
 	}
 
 	var err error
-	tunAdapter, err = tun.NewTunAdapter()
+	tunAdapter, err = tun.NewTUNAdapter(name)
 	if err != nil {
 		return err
 	}
