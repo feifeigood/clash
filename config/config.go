@@ -80,9 +80,11 @@ type Profile struct {
 }
 
 type Tun struct {
-	Enable    bool   `yaml:"enable"`
-	Name      string `yaml:"-"`
-	DNSHijack bool   `yaml:"-"`
+	Enable                   bool   `yaml:"enable"`
+	Name                     string `yaml:"-"`
+	DNSHijack                bool   `yaml:"-"`
+	MacOSAutoRoute           bool   `yaml:"macOS-auto-route"`
+	MacOSAutoDetectInterface bool   `yaml:"macOS-auto-detect-interface"`
 }
 
 // Experimental config
@@ -102,8 +104,10 @@ type Config struct {
 }
 
 type RawTun struct {
-	Enable    bool `yaml:"enable"`
-	DNSHijack bool `yaml:"dns-hijack"`
+	Enable                   bool `yaml:"enable"`
+	DNSHijack                bool `yaml:"dns-hijack"`
+	MacOSAutoRoute           bool `yaml:"macOS-auto-route"`
+	MacOSAutoDetectInterface bool `yaml:"macOS-auto-detect-interface"`
 }
 
 type RawDNS struct {
@@ -268,8 +272,10 @@ func parseGeneral(cfg *RawConfig) (*General, error) {
 			AllowLan:    cfg.AllowLan,
 			BindAddress: cfg.BindAddress,
 			Tun: Tun{
-				Enable:    cfg.Tun.Enable,
-				DNSHijack: cfg.Tun.DNSHijack,
+				Enable:                   cfg.Tun.Enable,
+				DNSHijack:                cfg.Tun.DNSHijack,
+				MacOSAutoRoute:           cfg.Tun.MacOSAutoRoute,
+				MacOSAutoDetectInterface: cfg.Tun.MacOSAutoDetectInterface,
 			},
 		},
 		Controller: Controller{

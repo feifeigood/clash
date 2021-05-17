@@ -277,8 +277,9 @@ func ReCreateTun(conf config.Tun) error {
 	tunMux.Lock()
 	defer tunMux.Unlock()
 
-	enable := conf.Enable
 	name := "utun"
+	enable := conf.Enable
+	macOSAutoRoute := conf.MacOSAutoRoute
 	if conf.Name != "" {
 		name = conf.Name
 	}
@@ -296,7 +297,7 @@ func ReCreateTun(conf config.Tun) error {
 	}
 
 	var err error
-	tunAdapter, err = tun.NewTUNAdapter(name)
+	tunAdapter, err = tun.NewTUNAdapter(name, macOSAutoRoute)
 	if err != nil {
 		return err
 	}
