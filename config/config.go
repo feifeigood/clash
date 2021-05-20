@@ -6,11 +6,13 @@ import (
 	"net"
 	"net/url"
 	"os"
+	"runtime"
 	"strings"
 
 	"github.com/Dreamacro/clash/adapters/outbound"
 	"github.com/Dreamacro/clash/adapters/outboundgroup"
 	"github.com/Dreamacro/clash/adapters/provider"
+	"github.com/Dreamacro/clash/common/gw"
 	"github.com/Dreamacro/clash/component/auth"
 	"github.com/Dreamacro/clash/component/fakeip"
 	"github.com/Dreamacro/clash/component/trie"
@@ -252,6 +254,7 @@ func ParseRawConfig(rawCfg *RawConfig) (*Config, error) {
 
 func parseGeneral(cfg *RawConfig) (*General, error) {
 	externalUI := cfg.ExternalUI
+	macOSAutoRoute := cfg.Tun.MacOSAutoRoute
 
 	// checkout externalUI exist
 	if externalUI != "" {
@@ -260,6 +263,15 @@ func parseGeneral(cfg *RawConfig) (*General, error) {
 		if _, err := os.Stat(externalUI); os.IsNotExist(err) {
 			return nil, fmt.Errorf("external-ui: %s not exist", externalUI)
 		}
+	}
+
+	// auto detect default outging interface
+	if macOSAutoRoute && runtime.GOOS == "darwin" {
+		ifce, err := gw.AutoDetectInterfaceName()
+		if err != nil {
+			return nil, err
+		}
+		cfg.Interface = ifce
 	}
 
 	return &General{

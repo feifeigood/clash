@@ -131,6 +131,8 @@ func (ep *DNSEndpoint) HandlePacket(id stack.TransportEndpointID, pkt *stack.Pac
 		return
 	}
 
+	// TODO: dns-hijack condition with specific nameserver list, implement by upd packet redir
+
 	var msg D.Msg
 	msg.Unpack(pkt.Data().AsRange().ToOwnedView())
 	writer := DNSResponseWriter{s: ep.stack, pkt: pkt, id: id}
